@@ -1,0 +1,96 @@
+# ─────────────────────────────────────────────────────────────────────────
+# aiKart Agent Manifest — starter template
+#
+# Fill in the values below with your own agent's details, then upload this
+# file on the listing form. This is what powers "Try Me Now" — without a
+# valid manifest, buyers can only message you, they can never run your agent.
+#
+# Full guide: /docs/aikart-agent-manifest-guide.pdf
+# ─────────────────────────────────────────────────────────────────────────
+
+apiVersion: aikart.dev/v1
+kind: AgentManifest
+
+metadata:
+  name: my-agent-name              # lowercase letters, numbers, hyphens only — must be unique
+  displayName: "My Agent"          # shown to buyers on the listing page
+  description: "One-line description of what this agent does."
+
+runtime:
+  type: docker
+  # A publicly pullable image reference — the FULL image address in one
+  # string, not a separate "url" field. Examples:
+  #   python:3.11-alpine                                  (Docker Hub official image)
+  #   yourusername/your-repo:1.0.0                        (Docker Hub user image)
+  #   ghcr.io/yourusername/your-repo:1.0.0                (GitHub Container Registry)
+  image: "yourusername/your-agent-image:1.0.0"
+  # Optional — only set this if your image's default CMD isn't already correct.
+  # command: ["python3", "run.py"]
+
+resources:
+  # Start small. These are rounded UP to the nearest size AWS Fargate actually
+  # offers, so asking for more than you need costs real money for no benefit:
+  #   cpu 0.25 + memoryMb 512   →  0.25 vCPU / 0.5 GB   (cheapest, the default here)
+  #   cpu 1    + memoryMb 512   →  1 vCPU    / 2 GB     (4x the cost of the above!)
+  # Most agents are waiting on network I/O, not computing — 0.25 is usually right.
+  cpu: 0.25             # vCPUs, max 2
+  memoryMb: 512         # max 4096
+  timeoutSeconds: 60    # max 280
+
+# The form buyers fill in before running your agent. Add one entry per input
+# your agent reads from AIKART_INPUT. type must be one of:
+#   text | textarea | number | boolean | select
+inputs:
+  - name: topic
+    label: "What should it be about?"
+    type: text
+    required: true
+  # - name: style
+  #   label: "Choose a style"
+  #   type: select
+  #   required: false
+  #   options: ["Option A", "Option B"]
+  #   default: "Option A"
+
+# Optional — API keys and other environment variables your agent needs
+# (e.g. an LLM provider key for a LangChain/LangGraph agent).
+#
+# Declare only the NAMES here. This manifest file is uploaded to your listing
+# and is effectively public once approved, so it must never contain a real
+# key. You enter the actual values separately on the listing form; aiKart
+# stores them encrypted (AES-256-GCM) and injects them into your container's
+# environment only for the duration of each run.
+#
+# Names must look like environment variables: uppercase letters, numbers and
+# underscores, starting with a letter. AIKART_* and AWS_* are reserved.
+# secrets:
+#   - name: OPENAI_API_KEY
+#     description: "Your OpenAI API key — used for the summarisation step."
+#     required: true
+
+output:
+  # How your agent's response should be rendered on the listing page.
+  format: text          # text | markdown | json | html
+
+security:
+  # "none"      = your agent needs no internet access while it runs.
+  # "allowlist" = your agent needs specific external domains, listed below.
+  #
+  # This is enforced by running your container in a security group matching the
+  # value you set. Note that "allowlist" is currently enforced at the network
+  # level, not per-domain — treat egressAllowlist as a declaration of intent
+  # rather than a guarantee that other domains are blocked.
+  networkEgress: none
+  # egressAllowlist: ["api.example.com"]
+
+# ─────────────────────────────────────────────────────────────────────────
+# Your container's contract (required, regardless of what your code does
+# internally):
+#   - Read the buyer's input from the AIKART_INPUT environment variable
+#     (a JSON string), e.g. {"topic": "..."}.
+#   - Any secrets you declared above arrive as ordinary environment
+#     variables, e.g. os.environ["OPENAI_API_KEY"].
+#   - Write your result to /aikart/output.json as JSON:
+#     {"format": "text", "response": "<your result as a string>"}
+#   - Exit with code 0 on success. Any non-zero exit is treated as a failure.
+# ─────────────────────────────────────────────────────────────────────────
