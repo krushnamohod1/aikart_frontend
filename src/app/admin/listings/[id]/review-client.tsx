@@ -388,6 +388,9 @@ export default function AdminListingReview({
   const [isRejecting, setIsRejecting] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+  const [feedbackText, setFeedbackText] = useState("");
+  const [copiedFeedback, setCopiedFeedback] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [actionDone, setActionDone] = useState<"approved" | "rejected" | null>(null);
   const [secretInputs, setSecretInputs] = useState<Record<string, string>>({});
@@ -498,8 +501,8 @@ export default function AdminListingReview({
 
   return (
     <div className="min-h-screen bg-[#F8F9FA] flex flex-col md:flex-row text-slate-800">
-      {/* ── Left Sidebar (220px fixed) ── */}
-      <aside className="w-full md:w-[220px] md:min-h-screen bg-white border-r border-[#E5E7EB] flex flex-col shrink-0">
+      {/* ── Left Sidebar (Sticky on desktop) ── */}
+      <aside className="w-full md:w-[250px] md:h-screen md:sticky md:top-0 bg-white border-r border-[#E5E7EB] flex flex-col shrink-0 md:overflow-y-auto z-20">
         {/* Logo at top */}
         <div className="p-5 border-b border-[#E5E7EB] flex items-center justify-between">
           <Link href="/" className="inline-block" aria-label="aiKart home">
@@ -519,11 +522,10 @@ export default function AdminListingReview({
             <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 px-3 mb-2">
               Main
             </p>
-            <nav className="space-y-1">
+            <nav className="space-y-1.5">
               <Link
                 href="/admin"
-                style={{ borderRadius: "12px" }}
-                className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors"
+                className="w-full flex items-center gap-3 px-4 py-2.5 rounded-full text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors"
               >
                 <span className="material-symbols-outlined text-[20px]">dashboard</span>
                 Dashboard
@@ -536,19 +538,17 @@ export default function AdminListingReview({
             <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 px-3 mb-2">
               Listings
             </p>
-            <nav className="space-y-1">
+            <nav className="space-y-1.5">
               <Link
                 href="/admin"
-                style={{ borderRadius: "12px" }}
-                className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium bg-[#2563EB] text-white shadow-sm"
+                className="w-full flex items-center gap-3 px-4 py-2.5 rounded-full text-sm font-medium bg-[#2563EB] text-white shadow-sm"
               >
                 <span className="material-symbols-outlined text-[20px]">rate_review</span>
                 Review Listing
               </Link>
               <Link
                 href="/admin"
-                style={{ borderRadius: "12px" }}
-                className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors"
+                className="w-full flex items-center gap-3 px-4 py-2.5 rounded-full text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors"
               >
                 <span className="material-symbols-outlined text-[20px]">list_alt</span>
                 All Listings
@@ -561,19 +561,17 @@ export default function AdminListingReview({
             <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 px-3 mb-2">
               Account
             </p>
-            <nav className="space-y-1">
+            <nav className="space-y-1.5">
               <Link
                 href="/profile"
-                style={{ borderRadius: "12px" }}
-                className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors"
+                className="w-full flex items-center gap-3 px-4 py-2.5 rounded-full text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors"
               >
                 <span className="material-symbols-outlined text-[20px]">person</span>
                 Profile
               </Link>
               <Link
                 href="/explore"
-                style={{ borderRadius: "12px" }}
-                className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors"
+                className="w-full flex items-center gap-3 px-4 py-2.5 rounded-full text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors"
               >
                 <span className="material-symbols-outlined text-[20px]">storefront</span>
                 Marketplace
@@ -593,44 +591,22 @@ export default function AdminListingReview({
           </div>
 
           <div className="flex items-center gap-3 self-start sm:self-center flex-wrap">
+            <button
+              type="button"
+              onClick={() => setShowFeedbackModal(true)}
+              className="inline-flex items-center justify-center px-4 py-1.5 bg-white border border-[#E5E7EB] text-gray-700 font-medium text-xs sm:text-sm rounded-full shadow-sm hover:bg-gray-50 hover:text-gray-900 hover:border-gray-300 transition-all cursor-pointer"
+            >
+              Give Feedback
+            </button>
+
             <Link
               href="/admin"
-              className="ak-btn-back"
+              className="inline-flex items-center justify-center px-4 py-1.5 bg-white border border-[#E5E7EB] text-gray-700 font-medium text-xs sm:text-sm rounded-full shadow-sm hover:bg-gray-50 hover:text-gray-900 hover:border-gray-300 transition-all cursor-pointer"
             >
-              <span className="material-symbols-outlined text-base">arrow_back</span>
               Back
             </Link>
 
-            {listing.status === "pending" ? (
-              <>
-                {/* Reject Button: border: 2px solid #EF4444, text: #EF4444, bg: white, hover: bg-red-50, rounded-full, px-7 py-2.5 */}
-                <button
-                  type="button"
-                  onClick={() => setShowRejectModal(true)}
-                  className="inline-flex items-center gap-2 px-7 py-2.5 bg-white border-2 border-[#EF4444] text-[#EF4444] rounded-full font-medium text-sm hover:bg-red-50 transition-all duration-200 ease-in-out shadow-sm"
-                >
-                  <span className="material-symbols-outlined text-base">close</span>
-                  Reject
-                </button>
-
-                {/* Approve Button: border: 2px solid #22C55E, text: #22C55E, bg: white, hover: bg-green-50, rounded-full, px-7 py-2.5 */}
-                <button
-                  type="button"
-                  onClick={handleApprove}
-                  disabled={isApproving}
-                  className="inline-flex items-center gap-2 px-7 py-2.5 bg-white border-2 border-[#22C55E] text-[#22C55E] rounded-full font-medium text-sm hover:bg-green-50 transition-all duration-200 ease-in-out shadow-sm disabled:opacity-50"
-                >
-                  {isApproving ? (
-                    <span className="material-symbols-outlined text-base animate-spin">
-                      progress_activity
-                    </span>
-                  ) : (
-                    <span className="material-symbols-outlined text-base">check</span>
-                  )}
-                  Approve
-                </button>
-              </>
-            ) : (
+            {listing.status !== "pending" && (
               <span
                 className={`px-3.5 py-1 rounded-full border text-xs font-bold uppercase tracking-wider ${
                   listing.status === "approved"
@@ -1086,21 +1062,7 @@ export default function AdminListingReview({
             )}
           </div>
 
-          {/* CARD 7: DEMONSTRATION VIDEO (if present) */}
-          {video && (
-            <div style={{ borderRadius: "12px" }} className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-6 space-y-3">
-              <h2 className="text-xs font-bold text-gray-400 uppercase tracking-wider">
-                Demonstration Video
-              </h2>
-              <video
-                src={video.url}
-                controls
-                className="w-full max-h-[420px] rounded-xl border border-[#E5E7EB] bg-black"
-              />
-            </div>
-          )}
-
-          {/* CARD 8: SCREENSHOTS (if present) */}
+          {/* CARD 7: SCREENSHOTS (if present) */}
           {screenshots.length > 0 && (
             <div style={{ borderRadius: "12px" }} className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-6 space-y-3">
               <h2 className="text-xs font-bold text-gray-400 uppercase tracking-wider">
@@ -1126,7 +1088,7 @@ export default function AdminListingReview({
             </div>
           )}
 
-          {/* CARD 9: PDF DOCUMENT (if present) */}
+          {/* CARD 8: PDF DOCUMENT (if present) */}
           {pdf && (
             <div style={{ borderRadius: "12px" }} className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-6 space-y-3">
               <h2 className="text-xs font-bold text-gray-400 uppercase tracking-wider">
@@ -1148,6 +1110,52 @@ export default function AdminListingReview({
                   View / Download PDF Document
                 </span>
               </a>
+            </div>
+          )}
+
+          {/* CARD 9: DEMONSTRATION VIDEO (if present) */}
+          {video && (
+            <div style={{ borderRadius: "12px" }} className="bg-white rounded-2xl border border-[#E5E7EB] shadow-sm p-6 space-y-3">
+              <h2 className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                Demonstration Video
+              </h2>
+              <video
+                src={video.url}
+                controls
+                className="w-full max-h-[420px] rounded-xl border border-[#E5E7EB] bg-black"
+              />
+            </div>
+          )}
+
+          {/* ACTION BUTTONS: REJECT & APPROVE (Positioned below Demonstration Video) */}
+          {listing.status === "pending" && (
+            <div className="flex items-center justify-end gap-3 pt-3 pb-8">
+              {/* Reject Button: compact pill */}
+              <button
+                type="button"
+                onClick={() => setShowRejectModal(true)}
+                className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-white border border-[#EF4444] text-[#EF4444] rounded-full font-medium text-xs sm:text-sm hover:bg-red-50 transition-all duration-200 ease-in-out shadow-sm cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-sm">close</span>
+                Reject
+              </button>
+
+              {/* Approve Button: compact pill */}
+              <button
+                type="button"
+                onClick={handleApprove}
+                disabled={isApproving}
+                className="inline-flex items-center gap-1.5 px-4 py-1.5 bg-white border border-[#22C55E] text-[#22C55E] rounded-full font-medium text-xs sm:text-sm hover:bg-green-50 transition-all duration-200 ease-in-out shadow-sm disabled:opacity-50 cursor-pointer"
+              >
+                {isApproving ? (
+                  <span className="material-symbols-outlined text-sm animate-spin">
+                    progress_activity
+                  </span>
+                ) : (
+                  <span className="material-symbols-outlined text-sm">check</span>
+                )}
+                Approve
+              </button>
             </div>
           )}
 
@@ -1196,7 +1204,7 @@ export default function AdminListingReview({
                   setShowRejectModal(false);
                   setError(null);
                 }}
-                className="ak-btn-cancel flex-1"
+                className="flex-1 py-2.5 bg-white border border-[#E5E7EB] hover:bg-gray-50 text-gray-700 font-medium rounded-full text-sm transition-colors cursor-pointer shadow-sm"
               >
                 Cancel
               </button>
@@ -1204,9 +1212,96 @@ export default function AdminListingReview({
                 type="button"
                 onClick={handleReject}
                 disabled={isRejecting}
-                className="flex-1 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-medium rounded-xl transition-colors text-sm disabled:opacity-50"
+                className="flex-1 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-medium rounded-full transition-colors text-sm disabled:opacity-50 cursor-pointer shadow-sm"
               >
                 {isRejecting ? "Sending…" : "Confirm Reject"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Give Feedback Modal */}
+      {showFeedbackModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-6">
+          <div className="w-full max-w-lg bg-white border border-[#E5E7EB] rounded-2xl p-6 md:p-8 space-y-5 shadow-xl">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-lg font-bold text-gray-900">
+                  Give Feedback
+                </h3>
+                <p className="text-xs text-gray-500 mt-1">
+                  Send notes or revision feedback to{" "}
+                  <span className="font-semibold text-gray-700">{listing.provider_name || "the provider"}</span>.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowFeedbackModal(false);
+                  setFeedbackText("");
+                  setCopiedFeedback(false);
+                }}
+                className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 flex items-center justify-center transition-colors cursor-pointer text-lg leading-none"
+              >
+                ×
+              </button>
+            </div>
+
+            <textarea
+              value={feedbackText}
+              onChange={(e) => setFeedbackText(e.target.value)}
+              placeholder="Type your feedback, questions, or revision requests here..."
+              rows={5}
+              className="w-full bg-[#F8F9FA] border border-[#E5E7EB] rounded-xl p-3.5 text-sm text-gray-900 placeholder:text-gray-400 focus:bg-white focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20 transition-all outline-none resize-none"
+            />
+
+            <div className="flex flex-col sm:flex-row gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => {
+                  if (!feedbackText.trim()) return;
+                  navigator.clipboard.writeText(feedbackText);
+                  setCopiedFeedback(true);
+                  setTimeout(() => setCopiedFeedback(false), 2000);
+                }}
+                disabled={!feedbackText.trim()}
+                className="px-5 py-2.5 bg-white border border-[#E5E7EB] hover:bg-gray-50 text-gray-700 font-medium rounded-full text-sm transition-colors disabled:opacity-50 cursor-pointer shadow-sm"
+              >
+                {copiedFeedback ? "Copied!" : "Copy Text"}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  if (!feedbackText.trim()) return;
+                  const subject = encodeURIComponent(`Feedback on your aiKart listing: ${listing.title}`);
+                  const body = encodeURIComponent(
+                    `Hi ${listing.provider_name || "there"},\n\nWe reviewed your listing submission "${listing.title}" on aiKart and have the following feedback:\n\n${feedbackText}\n\nBest regards,\naiKart Review Team`
+                  );
+                  window.location.href = `mailto:${listing.provider_email || ""}?subject=${subject}&body=${body}`;
+                  setShowFeedbackModal(false);
+                  setFeedbackText("");
+                }}
+                disabled={!feedbackText.trim()}
+                className="flex-1 py-2.5 bg-[#2563EB] hover:bg-blue-700 text-white font-medium rounded-full transition-colors text-sm disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2 shadow-sm"
+              >
+                <span className="material-symbols-outlined text-base">email</span>
+                Send via Email
+              </button>
+            </div>
+
+            <div className="pt-2 border-t border-gray-100 flex items-center justify-between text-xs text-gray-400">
+              <span>Have platform feedback instead?</span>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowFeedbackModal(false);
+                  window.dispatchEvent(new CustomEvent("open-contact-modal"));
+                }}
+                className="text-[#2563EB] hover:underline font-medium cursor-pointer"
+              >
+                aiKart Feedback Form
               </button>
             </div>
           </div>

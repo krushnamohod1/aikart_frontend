@@ -486,6 +486,7 @@ export default function HomeClient({ data }: { data: HomeData }) {
           />
         </div>
         <div className="hm-hero-veil" />
+        <div className="hm-hero-fade" />
         <div className="hm-container hm-hero-in">
           <h1 className="ff-redhat hm-hero-title">
             Discover, Test &amp; Buy <span className="hm-grad">AI Solutions</span><br className="hm-hero-br" />for Your Business
@@ -874,7 +875,17 @@ const CSS = `
 .hm-hero-video--frozen{
   filter:brightness(0.98);
 }
-.hm-hero-veil{ position:absolute; inset:0; background:linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 55%, rgba(0,0,0,0.48) 80%, rgba(0,0,0,0.62) 100%); z-index:3; }
+.hm-hero-veil{ position:absolute; inset:0; background:linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 45%, rgba(0,0,0,0.48) 75%, rgba(0,0,0,0.2) 90%, rgba(0,0,0,0) 100%); z-index:2; }
+.hm-hero-fade{
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  height:120px;
+  background:linear-gradient(to bottom, rgba(244,244,244,0) 0%, rgba(244,244,244,0) 25%, rgba(244,244,244,0.35) 55%, rgba(244,244,244,0.85) 82%, #f4f4f4 100%);
+  z-index:3;
+  pointer-events:none;
+}
 .hm-hero-in{ position:relative; min-height:inherit; padding-top:472px; padding-bottom:80px; padding-left:12px; padding-right:97px; z-index:4; }
 .hm-hero-title{ max-width:800px; width:100%; height:auto; overflow:visible; font-weight:500; color:#fff; font-size:48px; line-height:64px; letter-spacing:0; margin:0; text-shadow:0 1px 4px rgba(0,0,0,0.25); }
 

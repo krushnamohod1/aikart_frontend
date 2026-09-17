@@ -379,6 +379,7 @@ export default function HomeClientMobile({ data }: { data: HomeData }) {
       {/* ─── HERO (Mobile: Edge-to-Edge Image, No Video) ─── */}
       <section className="hm-mob-hero">
         <div className="hm-mob-hero-veil" />
+        <div className="hm-mob-hero-fade" />
         <div className="hm-mob-hero-in">
           <h1 className="ff-redhat hm-mob-hero-title">
             Discover, Test &amp; Buy <span className="hm-grad">AI Solutions</span> for Your Business
@@ -718,9 +719,27 @@ const MOBILE_CSS = `
     rgba(0,0,0,0.04) 0%,
     rgba(0,0,0,0.12) 45%,
     rgba(0,0,0,0.48) 78%,
-    rgba(0,0,0,0.76) 100%
+    rgba(0,0,0,0.3) 92%,
+    rgba(0,0,0,0) 100%
   );
   z-index: 1;
+}
+
+.hm-mob-hero-fade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 90px;
+  background: linear-gradient(
+    to bottom,
+    rgba(244, 244, 244, 0) 0%,
+    rgba(244, 244, 244, 0.25) 35%,
+    rgba(244, 244, 244, 0.85) 75%,
+    #f4f4f4 100%
+  );
+  z-index: 1;
+  pointer-events: none;
 }
 
 .hm-mob-hero-in {

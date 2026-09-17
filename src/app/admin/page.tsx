@@ -128,8 +128,8 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-screen bg-[#F8F9FA] flex flex-col md:flex-row text-slate-800">
-      {/* ── Left Sidebar (220px fixed on desktop) ── */}
-      <aside className="w-full md:w-[220px] md:min-h-screen bg-white border-r border-[#E5E7EB] flex flex-col shrink-0">
+      {/* ── Left Sidebar (Sticky filter/navigation on desktop) ── */}
+      <aside className="w-full md:w-[250px] md:h-screen md:sticky md:top-0 bg-white border-r border-[#E5E7EB] flex flex-col shrink-0 md:overflow-y-auto z-20">
         {/* Logo at top + mobile hamburger */}
         <div className="p-4 md:p-5 border-b border-[#E5E7EB] flex items-center justify-between">
           <Link href="/" className="inline-block" aria-label="aiKart home">
@@ -159,15 +159,14 @@ export default function AdminPage() {
             <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 px-3 mb-2">
               Main
             </p>
-            <nav className="space-y-1">
+            <nav className="space-y-1.5">
               <button
                 type="button"
                 onClick={() => {
                   setActiveTab("dashboard");
                   setMobileMenuOpen(false);
                 }}
-                style={{ borderRadius: "12px" }}
-                className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
+                className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-full text-sm font-medium transition-all ${
                   activeTab === "dashboard"
                     ? "bg-[#2563EB] text-white shadow-sm"
                     : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
@@ -184,27 +183,26 @@ export default function AdminPage() {
             <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 px-3 mb-2">
               Listings
             </p>
-            <nav className="space-y-1">
+            <nav className="space-y-1.5">
               <button
                 type="button"
                 onClick={() => {
                   setActiveTab("pending");
                   setMobileMenuOpen(false);
                 }}
-                style={{ borderRadius: "12px" }}
-                className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
+                className={`w-full flex items-center justify-between px-4 py-2.5 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
                   activeTab === "pending"
                     ? "bg-[#2563EB] text-white shadow-sm"
                     : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
                 }`}
               >
-                <span className="flex items-center gap-3">
-                  <span className="material-symbols-outlined text-[20px]">pending_actions</span>
-                  Pending Review
+                <span className="flex items-center gap-3 min-w-0">
+                  <span className="material-symbols-outlined text-[20px] shrink-0">pending_actions</span>
+                  <span className="whitespace-nowrap">Pending Review</span>
                 </span>
                 {pending.length > 0 && (
                   <span
-                    className={`text-[11px] font-bold px-1.5 py-0.5 rounded-full ${
+                    className={`text-[11px] font-bold px-2 py-0.5 rounded-full shrink-0 ml-2 ${
                       activeTab === "pending"
                         ? "bg-white/20 text-white"
                         : "bg-amber-100 text-amber-800"
@@ -221,19 +219,18 @@ export default function AdminPage() {
                   setActiveTab("all");
                   setMobileMenuOpen(false);
                 }}
-                style={{ borderRadius: "12px" }}
-                className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
+                className={`w-full flex items-center justify-between px-4 py-2.5 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
                   activeTab === "all"
                     ? "bg-[#2563EB] text-white shadow-sm"
                     : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
                 }`}
               >
-                <span className="flex items-center gap-3">
-                  <span className="material-symbols-outlined text-[20px]">list_alt</span>
-                  All Listings
+                <span className="flex items-center gap-3 min-w-0">
+                  <span className="material-symbols-outlined text-[20px] shrink-0">list_alt</span>
+                  <span className="whitespace-nowrap">All Listings</span>
                 </span>
                 <span
-                  className={`text-[11px] font-medium px-1.5 py-0.5 rounded-full ${
+                  className={`text-[11px] font-medium px-2 py-0.5 rounded-full shrink-0 ml-2 ${
                     activeTab === "all"
                       ? "bg-white/20 text-white"
                       : "bg-gray-100 text-gray-600"
@@ -249,20 +246,19 @@ export default function AdminPage() {
                   setActiveTab("rejected");
                   setMobileMenuOpen(false);
                 }}
-                style={{ borderRadius: "12px" }}
-                className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
+                className={`w-full flex items-center justify-between px-4 py-2.5 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
                   activeTab === "rejected"
                     ? "bg-[#2563EB] text-white shadow-sm"
                     : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
                 }`}
               >
-                <span className="flex items-center gap-3">
-                  <span className="material-symbols-outlined text-[20px]">cancel</span>
-                  Rejected
+                <span className="flex items-center gap-3 min-w-0">
+                  <span className="material-symbols-outlined text-[20px] shrink-0">cancel</span>
+                  <span className="whitespace-nowrap">Rejected</span>
                 </span>
                 {rejected.length > 0 && (
                   <span
-                    className={`text-[11px] font-bold px-1.5 py-0.5 rounded-full ${
+                    className={`text-[11px] font-bold px-2 py-0.5 rounded-full shrink-0 ml-2 ${
                       activeTab === "rejected"
                         ? "bg-white/20 text-white"
                         : "bg-rose-100 text-rose-700"
@@ -280,19 +276,17 @@ export default function AdminPage() {
             <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 px-3 mb-2">
               Account
             </p>
-            <nav className="space-y-1">
+            <nav className="space-y-1.5">
               <Link
                 href="/profile"
-                style={{ borderRadius: "12px" }}
-                className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors"
+                className="w-full flex items-center gap-3 px-4 py-2.5 rounded-full text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors whitespace-nowrap"
               >
                 <span className="material-symbols-outlined text-[20px]">person</span>
                 Profile
               </Link>
               <Link
                 href="/explore"
-                style={{ borderRadius: "12px" }}
-                className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors"
+                className="w-full flex items-center gap-3 px-4 py-2.5 rounded-full text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors whitespace-nowrap"
               >
                 <span className="material-symbols-outlined text-[20px]">storefront</span>
                 Marketplace
@@ -311,25 +305,14 @@ export default function AdminPage() {
             <p className="text-sm text-gray-500 mt-1">Review and manage all submitted listings.</p>
           </div>
 
-          {/* Top Right: Back Button + Admin Avatar */}
+          {/* Top Right: Back Button */}
           <div className="flex items-center gap-3 self-start sm:self-center">
             <Link
               href="/"
-              className="ak-btn-back"
+              className="inline-flex items-center justify-center px-4 py-1.5 bg-white border border-[#E5E7EB] text-gray-700 font-medium text-xs sm:text-sm rounded-full shadow-sm hover:bg-gray-50 hover:text-gray-900 hover:border-gray-300 transition-all cursor-pointer"
             >
-              <span className="material-symbols-outlined text-sm">arrow_back</span>
               Back
             </Link>
-
-            <div className="flex items-center gap-3 bg-white px-3.5 py-1.5 rounded-full border border-[#E5E7EB] shadow-sm">
-              <div className="w-8 h-8 rounded-full bg-[#2563EB] text-white font-bold text-sm flex items-center justify-center shadow-inner">
-                A
-              </div>
-              <div className="text-left">
-                <p className="text-xs font-normal text-gray-900 leading-tight">Admin</p>
-                <p className="text-[10px] text-gray-500">Super Administrator</p>
-              </div>
-            </div>
           </div>
         </header>
 
@@ -481,10 +464,9 @@ export default function AdminPage() {
                       </span>
                       <Link
                         href={`/admin/listings/${listing.id}`}
-                        className="inline-flex items-center gap-1.5 px-5 py-2 bg-[#2563EB] text-white font-medium text-sm rounded-full hover:bg-blue-700 transition-colors shadow-sm"
+                        className="inline-flex items-center justify-center px-5 py-2 bg-[#2563EB] text-white font-medium text-sm rounded-full hover:bg-blue-700 transition-colors shadow-sm"
                       >
                         Review
-                        <span className="material-symbols-outlined text-sm">arrow_forward</span>
                       </Link>
                     </div>
                   </div>
